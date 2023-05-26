@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  youapps:
+    container_name: 'youapps'
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      # - /usr/src/app/node_modules
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+      - 9229:9229
+    command: npm run start:debug
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:latest
+    container_name: 'youapps_mongo'
+    volumes:
+      - mongodb_data_container:/data/db
+    env_file:
+      - .env
+    ports:
+      - 27018:27017
+networks:
+  webnet:
+volumes:
+  mongodb_data_container:
